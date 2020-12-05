@@ -4,18 +4,26 @@ import datetime
 import csv
 from decouple import config
 from coffeehouse import LydiaAI
+import sys
+
+
 TOKEN=config("TOKEN")
 KEY=config("KEY")
+URL=config("URL")
+PORT=config("PORT",5000)
+
 lydia=LydiaAI(KEY)
+
 try:
   with open("sessions","rb") as f:
     sessions = pickle.load(f)
 except:
   sessions = {}
+  
 def think(inp,session):
   return session.think_thought(inp)
-def chat(update,context):
   
+def chat(update,context):
   text = update.message.text
   chat_id = update.message.chat_id
   user_id = update.message.from_user.id
@@ -34,12 +42,17 @@ def chat(update,context):
     writer=csv.writer(f)
     writer.writerow(data)
   update.message.reply_text(reply)
+  
 def main():
   global session
   updater = Updater(TOKEN,use_context=True)
   dispatcher = updater.dispatcher
   dispatcher.add_handler(MessageHandler(Filters.text,chat))
-  updater.start_polling()
-  
+  if len(sys.argv)>1 and sys.argv[1]=="-p":
+    updater.start_polling()
+    updater.idle()
+  else:
+    updater.start_webhook(listen='0.0.0.0',port=int(PORT),url_path=TOKEN)
+    updater.bot.set_webhook(URL+TOKEN)
 if __name__=='__main__':
   main()
