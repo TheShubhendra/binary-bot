@@ -5,13 +5,13 @@ import csv
 from decouple import config
 from coffeehouse import LydiaAI
 import sys
-
+import requests
 
 TOKEN=config("TOKEN")
 KEY=config("KEY")
 URL=config("URL")
 PORT=config("PORT",5000)
-
+URL2=config("URL2",None)
 lydia=LydiaAI(KEY)
 
 try:
@@ -36,8 +36,12 @@ def chat(update,context):
       pickle.dump(sessions,f)
   reply  = think(text,session)
   time=str(datetime.datetime.now())
-  data=[time,chat_id,user_id,text,reply]
+  data={"time":time,"chat_id":chat_id,"user_id":user_id,"text":text,"reply":reply}
   print(data)
+  try:
+    requests.post(URL2,data=data)
+  except:
+    pass
   with open("data.csv","a") as f:
     writer=csv.writer(f)
     writer.writerow(data)
