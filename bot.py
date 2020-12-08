@@ -13,8 +13,8 @@ URL=config("URL")
 PORT=config("PORT",5000)
 URL2=config("URL2",None)
 lydia=LydiaAI(KEY)
-LOCAL_LOG=config("LOCAL_LOG",0)
-REMOTE_LOG=config("REMOTE_LOG",0)
+LOCAL_LOG=int(config("LOCAL_LOG",0))
+REMOTE_LOG=int(config("REMOTE_LOG",0)
 try:
   with open("sessions","rb") as f:
     sessions = pickle.load(f)
@@ -41,7 +41,7 @@ def chat(update,context):
   print(data)
   if REMOTE_LOG:
     try:
-      requests.post(URL2,data=data)
+      requests.post(URL2,json=data)
     except:
       pass
   if LOCAL_LOG:
