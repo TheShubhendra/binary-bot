@@ -13,7 +13,8 @@ URL=config("URL")
 PORT=config("PORT",5000)
 URL2=config("URL2",None)
 lydia=LydiaAI(KEY)
-
+LOCAL_LOG=config("LOCAL_LOG",0)
+REMOTE_LOG=config("REMOTE_LOG",0)
 try:
   with open("sessions","rb") as f:
     sessions = pickle.load(f)
@@ -38,13 +39,15 @@ def chat(update,context):
   time=str(datetime.datetime.now())
   data={"time":time,"chat_id":chat_id,"user_id":user_id,"text":text,"reply":reply}
   print(data)
-  try:
-    requests.post(URL2,data=data)
-  except:
-    pass
-  with open("data.csv","a") as f:
-    writer=csv.writer(f)
-    writer.writerow(data)
+  if REMOTE_LOG:
+    try:
+      requests.post(URL2,data=data)
+    except:
+      pass
+  if LOCAL_LOG:
+    with open("data.csv","a") as f:
+      writer=csv.writer(f)
+      writer.writerow(data)
   update.message.reply_text(reply)
   
 def main():
