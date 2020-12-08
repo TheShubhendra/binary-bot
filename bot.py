@@ -14,7 +14,7 @@ PORT=config("PORT",5000)
 URL2=config("URL2",None)
 lydia=LydiaAI(KEY)
 LOCAL_LOG=int(config("LOCAL_LOG",0))
-REMOTE_LOG=int(config("REMOTE_LOG",0)
+REMOTE_LOG=int(config("REMOTE_LOG",0))
 try:
   with open("sessions","rb") as f:
     sessions = pickle.load(f)
