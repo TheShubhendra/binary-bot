@@ -29,6 +29,7 @@ def chat(update,context):
   chat_id = update.message.chat_id
   user_id = update.message.from_user.id
   if user_id in sessions:
+    
     session=sessions[user_id]
   else:
     session=lydia.create_session()
@@ -40,10 +41,7 @@ def chat(update,context):
   data={"time":time,"chat_id":chat_id,"user_id":user_id,"text":text,"reply":reply}
   print(data)
   if REMOTE_LOG:
-    try:
-      requests.post(URL2,json=data)
-    except:
-      pass
+    requests.post(URL2,json=data)
   if LOCAL_LOG:
     with open("data.csv","a") as f:
       writer=csv.writer(f)
